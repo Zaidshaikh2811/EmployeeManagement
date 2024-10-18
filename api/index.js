@@ -19,8 +19,14 @@ mongoose.connect(process.env.MONGODB_URL, {})
 
 app.listen(PORT, () => console.log(`server running on port ${PORT}`));
 
-app.post("/addEmployee", (req, res) => {
-    const { employeeId, employeeName, email, designation, joiningDate, salary, activeEmployee } = req.body;
+app.post("/addEmployee", async (req, res) => {
+    const { employeeId, employeeName, email, designation, joiningDate, salary, activeEmployee, dateOfBirth, phoneNo, address } = req.body;
+
+    // Validate the required fields
+    if (!employeeId || !employeeName || !email || !designation || !joiningDate || !salary || !dateOfBirth || !phoneNo || !address) {
+        return res.status(400).send("All fields are required."); // Send a 400 status code for bad requests
+    }
+
     const employee = new Employee({
         employeeId,
         employeeName,
@@ -28,19 +34,22 @@ app.post("/addEmployee", (req, res) => {
         designation,
         joiningDate,
         salary,
-        activeEmployee
+        activeEmployee,
+        dateOfBirth,
+        phoneNo,
+        address
     });
 
-    employee.save((err) => {
-        if (err) {
-            console.log(err);
-            res.status(500).send(err); // Send a 500 status code for errors
-        } else {
-            console.log("employee added successfully");
-            res.send("employee added successfully");
-        }
-    });
+    try {
+        await employee.save();
+        console.log("Employee added successfully");
+        res.status(201).send("Employee added successfully"); // Send a 201 status code for created resource
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error adding employee: " + err.message); // Send a 500 status code for server errors
+    }
 });
+
 
 app.get("/employees", async (req, res) => {
     try {
