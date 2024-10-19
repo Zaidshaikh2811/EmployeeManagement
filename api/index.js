@@ -6,7 +6,7 @@ require('dotenv').config();
 const moment = require('moment');
 
 const Employee = require('./models/employee');
-const Attendance = require('./models/attendence');
+const Attendance = require('./models/Attendance');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -80,7 +80,9 @@ app.post("/attendance", async (req, res) => {
             res.status(201).send("Attendance added successfully");
         }
         else {
+            console.log("Adding new attendance")
             const newAttendance = new Attendance({ employeeId, employeeName, date, status });
+            console.log(newAttendance)
             await newAttendance.save();
             res.status(201).send("Attendance added successfully");
         }

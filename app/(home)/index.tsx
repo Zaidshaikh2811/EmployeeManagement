@@ -98,6 +98,7 @@ export default function Home() {
                             shadowOpacity: 0.3,
                             shadowRadius: 4,
                         }}
+                        onPress={() => router.push("/markAttendance")}
                     >
                         <View
                             style={{

@@ -12,6 +12,12 @@ export default function HomeLayout() {
             <Stack.Screen name="addDetails" options={{
                 headerShown: false
             }} />
+            <Stack.Screen name="markAttendance" options={{
+                headerShown: false
+            }} />
+            <Stack.Screen name="[user]" options={{
+                headerShown: false
+            }} />
         </Stack>
     );
 }
