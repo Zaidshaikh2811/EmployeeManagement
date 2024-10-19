@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 
 const Employee = require('./models/employee');
+const Attendance = require('./models/attendence');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -24,6 +25,10 @@ app.post("/addEmployee", async (req, res) => {
 
     // Validate the required fields
     if (!employeeId || !employeeName || !email || !designation || !joiningDate || !salary || !dateOfBirth || !phoneNo || !address) {
+        console.log(
+            employeeId, employeeName, email, designation, joiningDate, salary, activeEmployee, dateOfBirth, phoneNo, address
+        );
+
         return res.status(400).send("All fields are required."); // Send a 400 status code for bad requests
     }
 
@@ -60,3 +65,42 @@ app.get("/employees", async (req, res) => {
         res.status(500).send(error); // Send a 500 status code for errors
     }
 });
+
+
+
+app.post("/attendance", async (req, res) => {
+    try {
+        const { employeeId, employeeName, date, status } = req.body
+        const existingAttendance = await Attendance.findOne({ employeeId, date });
+
+        if (existingAttendance) {
+            existingAttendance.status = status;
+            await existingAttendance.save();
+            res.status(201).send("Attendance added successfully");
+        }
+        else {
+            const newAttendance = new Attendance({ employeeId, employeeName, date, status });
+            await newAttendance.save();
+            res.status(201).send("Attendance added successfully");
+        }
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error); // Send a 500 status code for errors
+    }
+});
+
+
+
+app.get("/attendance", async (req, res) => {
+    try {
+        const { date } = req.query
+
+
+        const attendanceData = await Attendance.find({ date })
+        res.send(attendanceData)
+
+    } catch (error) {
+        res.send(500).json({ "message": error })
+    }
+})

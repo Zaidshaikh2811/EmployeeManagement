@@ -9,6 +9,9 @@ export default function HomeLayout() {
             <Stack.Screen name="Employees" options={{
                 headerShown: false
             }} />
+            <Stack.Screen name="addDetails" options={{
+                headerShown: false
+            }} />
         </Stack>
     );
 }
