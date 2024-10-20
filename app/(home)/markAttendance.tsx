@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import moment from "moment"
 import axios from 'axios';
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { router, useRouter } from 'expo-router';
 const MarkAttendance = () => {
     const router = useRouter()
@@ -68,10 +68,31 @@ const MarkAttendance = () => {
         return <Text>Loading...</Text>
     }
 
+    const employeeWithAttendance = attendanceList.map((employee) => {
+
+        const attendanceRecord = attendanceList.find((attendance) => {
+            return attendance.employeeId === employee._id
+        })
+        console.log(attendanceRecord);
+
+        return {
+            ...employee,
+            status: attendanceRecord?.status
+        }
+    })
+
+    console.log(employeeWithAttendance);
 
 
     return (
         <View style={{ flex: 1, backgroundColor: 'white' }}>
+            <Ionicons
+                onPress={() => router.back()}
+                name="arrow-back"
+                size={30}
+                color="#5a67d8" // Color to match overall theme
+                style={{ marginBottom: 20 }} // Add spacing below the icon
+            />
 
 
 
@@ -129,14 +150,26 @@ const MarkAttendance = () => {
                                             elevation: 5,
                                         }}>
                                         <View style={{ marginBottom: 12 }}>
-                                            <Text
-                                                style={{
-                                                    fontSize: 20, // Slightly larger for prominence
-                                                    fontWeight: '600', // Semi-bold for emphasis
-                                                    color: '#2D3748', // Darker color for primary text
-                                                }}>
-                                                {item.employeeName}
-                                            </Text>
+                                            <View>
+
+                                                <Text
+                                                    style={{
+                                                        fontSize: 20, // Slightly larger for prominence
+                                                        fontWeight: '600', // Semi-bold for emphasis
+                                                        color: '#2D3748', // Darker color for primary text
+                                                    }}>
+                                                    {item.employeeName}
+                                                </Text>
+                                                {
+                                                    item?.status && (
+                                                        <View>
+                                                            <Text>
+                                                                {item?.status === "present" ? <Text style={{ color: 'green' }}>Present</Text> : <Text style={{ color: 'red' }}>Absent</Text>}
+                                                            </Text>
+                                                        </View>
+                                                    )
+                                                }
+                                            </View>
                                             <Text
                                                 style={{
                                                     fontSize: 16,

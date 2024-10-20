@@ -180,22 +180,24 @@ export default function Home() {
                         </View>
                     </Pressable>
 
-                    {/* Duplicate similar blocks for other buttons */}
-                    <Pressable style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        padding: 16,
-                        backgroundColor: "#4c51bf",
-                        borderRadius: 12,
-                        shadowColor: "#000",
-                        shadowOffset: { width: 0, height: 4 },
-                        shadowOpacity: 0.4,
-                        shadowRadius: 5,
-                        marginBottom: 15,
-                        width: "90%",
-                        alignSelf: "center"
-                    }}>
+
+                    <Pressable
+                        onPress={() => router.push("/summary")}
+                        style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            padding: 16,
+                            backgroundColor: "#4c51bf",
+                            borderRadius: 12,
+                            shadowColor: "#000",
+                            shadowOffset: { width: 0, height: 4 },
+                            shadowOpacity: 0.4,
+                            shadowRadius: 5,
+                            marginBottom: 15,
+                            width: "90%",
+                            alignSelf: "center"
+                        }}>
                         <View style={{
                             padding: 7,
                             borderRadius: 10,

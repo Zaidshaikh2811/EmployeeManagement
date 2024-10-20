@@ -16,6 +16,7 @@ const Employees = () => {
 
 
             const res = await axios.get('https://employeemanagement-1-e1m0.onrender.com/employees');
+            console.log(res.data);
 
 
             setEmployees(res.data)

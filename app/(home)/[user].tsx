@@ -1,13 +1,15 @@
-import { useLocalSearchParams } from 'expo-router'
+import { useLocalSearchParams, useRouter } from 'expo-router'
 import moment from 'moment'
 import React, { useState } from 'react'
 import { Pressable, Text, TextInput, View } from 'react-native'
 
-import { AntDesign, Entypo, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
+import { AntDesign, Entypo, FontAwesome, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import axios from 'axios';
 
 const User = () => {
+    const router = useRouter()
     const params = useLocalSearchParams()
+
 
     const [currentDate, setCurrentDate] = useState(moment());
     const [attendanceStatus, setAttendanceStatus] = useState("present")
@@ -29,8 +31,8 @@ const User = () => {
     const submitAttendace = async () => {
         try {
             const attendance = {
-                employeeId: params.user,
-                employeeName: params.name,
+                employeeId: params.employeeId,
+                employeeName: params.employeeName,
                 date: currentDate.format("YYYY-MM-DD"),
                 status: attendanceStatus
             }
@@ -49,154 +51,137 @@ const User = () => {
     }
 
     return (
-        <View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginHorizontal: "auto", marginVertical: 10 }}>
+        <View style={{ padding: 16, backgroundColor: '#f7fafc', flex: 1 }}>
+            <Ionicons
+                onPress={() => router.back()}
+                name="arrow-back"
+                size={30}
+                color="#5a67d8" // Color to match overall theme
+                style={{ marginBottom: 20 }} // Add spacing below the icon
+            />
+
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
                 <AntDesign onPress={gotoPreviousDay} name="left" size={24} color="black" />
-                <Text>{formatDate(currentDate)}</Text>
+                <Text style={{ marginHorizontal: 16, fontSize: 16, fontWeight: 'bold', color: '#2D3748' }}>{formatDate(currentDate)}</Text>
                 <AntDesign onPress={goToNextDay} name="right" size={24} color="black" />
             </View>
 
             <Pressable>
                 <View
                     style={{
-                        backgroundColor: 'white', // Card background
-                        padding: 20, // Add more padding for better spacing
-                        marginHorizontal: 16,
-                        marginVertical: 8,
-                        borderRadius: 12,
+                        backgroundColor: 'white',
+                        padding: 20,
+                        marginHorizontal: 0,
+                        marginVertical: 10,
+                        borderRadius: 10,
                         shadowColor: '#000',
                         shadowOffset: { width: 0, height: 4 },
-                        shadowOpacity: 0.15,
-                        shadowRadius: 12,
+                        shadowOpacity: 0.1,
+                        shadowRadius: 8,
                         elevation: 5,
                     }}>
                     <View style={{ marginBottom: 12 }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-
-                            <Text
-                                style={{
-                                    fontSize: 20, // Slightly larger for prominence
-                                    fontWeight: '600', // Semi-bold for emphasis
-                                    color: '#2D3748', // Darker color for primary text
-
-                                }}>
+                            <Text style={{ fontSize: 20, fontWeight: '600', color: '#2D3748' }}>
                                 {params?.employeeName}
                             </Text>
-
-                            <Text style={{
-                                fontSize: 16,
-                                color: '#718096', // Soft color for secondary text
-                                marginTop: 4, // Spacing between name and email,
-                                marginLeft: 20
-                            }}>
-
+                            <Text style={{ fontSize: 16, color: '#718096', marginLeft: 20 }}>
                                 ID: {params?.employeeId}
                             </Text>
                         </View>
-                        <Text
-                            style={{
-                                fontSize: 16,
-                                color: '#718096', // Soft color for secondary text
-                                marginTop: 4 // Spacing between name and email
-                            }}>
+                        <Text style={{ fontSize: 16, color: '#718096', marginTop: 4 }}>
                             {params?.email}
                         </Text>
                     </View>
 
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Text
-                            style={{
-                                fontSize: 14,
-                                color: '#A0AEC0',
-                            }}>
-                            {params?.designation}
-                        </Text>
-
+                        <Text style={{ fontSize: 14, color: '#A0AEC0' }}>{params?.designation}</Text>
 
                         <View
                             style={{
-                                backgroundColor: params.activeEmployee ? '#38A169' : '#E53E3E', // Green for active, red for inactive
+                                backgroundColor: params?.activeEmployee ? '#38A169' : '#E53E3E',
                                 paddingHorizontal: 8,
                                 paddingVertical: 4,
                                 borderRadius: 12,
                             }}>
-                            <Text
-                                style={{
-                                    fontSize: 12,
-                                    color: 'white', // White text for contrast
-                                    fontWeight: 'bold',
-                                }}>
+                            <Text style={{ fontSize: 12, color: 'white', fontWeight: 'bold' }}>
                                 {params?.activeEmployee ? 'Active' : 'Inactive'}
                             </Text>
                         </View>
                     </View>
                 </View>
             </Pressable>
-            <View>
-                <Text
-                    style={{
-                        fontSize: 20, // Slightly larger for prominence
-                        fontWeight: '600', // Semi-bold for emphasis
-                        color: '#2D3748', // Darker color for primary text
-                        marginVertical: 10,
-                        alignSelf: 'center'
-                    }}>Attendance</Text>
 
+            {/* Attendance Section */}
+            <View style={{ marginVertical: 16 }}>
+                <Text style={{ fontSize: 20, fontWeight: '600', color: '#2D3748', textAlign: 'center', marginBottom: 12 }}>
+                    Attendance
+                </Text>
             </View>
-            <View style={{
-                flexDirection: 'row',
-                justifyContent: 'space-around',
-                alignItems: 'center',
-                marginVertical: 10
 
-            }}>
+            {/* Attendance Options */}
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: 16 }}>
                 <Pressable onPress={() => setAttendanceStatus("present")}>
-                    {attendanceStatus == "present" ?
-                        <FontAwesome5 name="dot-circle" size={24} color="green" /> :
-                        <Entypo name="circle" size={24} color="red" />}
-                    <Text>Present</Text>
-
+                    <FontAwesome5 name={attendanceStatus === "present" ? "dot-circle" : "circle"} size={24} color={attendanceStatus === "present" ? "green" : "red"} />
+                    <Text style={{ marginTop: 4, textAlign: 'center', color: '#2D3748' }}>Present</Text>
                 </Pressable>
                 <Pressable onPress={() => setAttendanceStatus("absent")}>
-                    {attendanceStatus == "absent" ?
-                        <FontAwesome5 name="dot-circle" size={24} color="green" /> :
-                        <Entypo name="circle" size={24} color="red" />}
-                    <Text>Absent</Text>
-
+                    <FontAwesome5 name={attendanceStatus === "absent" ? "dot-circle" : "circle"} size={24} color={attendanceStatus === "absent" ? "green" : "red"} />
+                    <Text style={{ marginTop: 4, textAlign: 'center', color: '#2D3748' }}>Absent</Text>
                 </Pressable>
             </View>
-            <View style={{
-                flexDirection: 'row',
-                justifyContent: 'space-around',
-                alignItems: 'center',
-                marginVertical: 10
 
-            }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: 16 }}>
                 <Pressable onPress={() => setAttendanceStatus("halfday")}>
-                    {attendanceStatus == "halfday" ?
-                        <FontAwesome5 name="dot-circle" size={24} color="green" /> :
-                        <Entypo name="circle" size={24} color="red" />}
-                    <Text>Half day</Text>
-
+                    <FontAwesome5 name={attendanceStatus === "halfday" ? "dot-circle" : "circle"} size={24} color={attendanceStatus === "halfday" ? "green" : "red"} />
+                    <Text style={{ marginTop: 4, textAlign: 'center', color: '#2D3748' }}>Half day</Text>
                 </Pressable>
                 <Pressable onPress={() => setAttendanceStatus("holiday")}>
-                    {attendanceStatus == "holiday" ?
-                        <FontAwesome5 name="dot-circle" size={24} color="green" /> :
-                        <Entypo name="circle" size={24} color="red" />}
-                    <Text>Holiday</Text>
-
+                    <FontAwesome5 name={attendanceStatus === "holiday" ? "dot-circle" : "circle"} size={24} color={attendanceStatus === "holiday" ? "green" : "red"} />
+                    <Text style={{ marginTop: 4, textAlign: 'center', color: '#2D3748' }}>Holiday</Text>
                 </Pressable>
             </View>
-            <View>
-                <TextInput placeholder='advanace /loans'></TextInput>
-                <TextInput placeholder='Extra Bonus'></TextInput>
+
+
+            <View style={{ marginBottom: 16 }}>
+                <TextInput
+                    placeholder="Advance / Loans"
+                    style={{
+                        backgroundColor: '#edf2f7',
+                        padding: 12,
+                        borderRadius: 8,
+                        marginVertical: 8,
+                        fontSize: 16,
+                        color: '#2D3748',
+                    }}
+                />
+                <TextInput
+                    placeholder="Extra Bonus"
+                    style={{
+                        backgroundColor: '#edf2f7',
+                        padding: 12,
+                        borderRadius: 8,
+                        marginVertical: 8,
+                        fontSize: 16,
+                        color: '#2D3748',
+                    }}
+                />
             </View>
-            <Pressable onPress={submitAttendace}>
 
-                <Text>Submit</Text>
+
+            <Pressable
+                onPress={submitAttendace}
+                style={{
+                    backgroundColor: '#3182ce',
+                    padding: 16,
+                    borderRadius: 10,
+                    alignItems: 'center',
+                    marginVertical: 10,
+                }}>
+                <Text style={{ fontSize: 18, color: 'white', fontWeight: '600' }}>Submit</Text>
             </Pressable>
-
         </View>
+
     )
 }
 
