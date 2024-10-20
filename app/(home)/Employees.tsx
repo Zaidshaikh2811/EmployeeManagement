@@ -44,7 +44,7 @@ const Employees = () => {
     const onChangeSearch = (e) => {
 
         setFilteredEmployees(Employees.filter((employee) => employee.employeeName.toLowerCase().includes(e.toLowerCase())))
-        console.log(filteredEmployees);
+
 
 
     }

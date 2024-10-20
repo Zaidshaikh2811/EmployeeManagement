@@ -5,7 +5,7 @@ import axios from "axios";
 import { AntDesign } from "@expo/vector-icons";
 import { DataTable } from "react-native-paper";
 
-const summary = () => {
+const Summary = () => {
     const [attendanceData, setAttendanceData] = useState([]);
     const [currentDate, setCurrentDate] = useState(moment());
 
@@ -22,31 +22,33 @@ const summary = () => {
     const formatDate = (date) => {
         return date.format("MMMM, YYYY");
     };
+
     const fetchAttendanceReport = async () => {
         try {
-            const respone = await axios.get(
+            const response = await axios.get(
                 `https://employeemanagement-1-e1m0.onrender.com/attendance-report-all-employees`,
                 {
                     params: {
-                        month: 11,
-                        year: 2023,
+                        month: currentDate.month() + 1, // moment.js months are 0-indexed, so add 1
+                        year: currentDate.year(),
                     },
                 }
             );
-            console.log(respone.data.report);
+            console.log("Attendance report", response.data.report);
 
-
-            setAttendanceData(respone.data.report);
+            setAttendanceData(response.data.report);
         } catch (error) {
-            console.log("Error fetching attendance");
+            console.log("Error fetching attendance", error);
         }
     };
+
     useEffect(() => {
         fetchAttendanceReport();
-    }, []);
-    console.log(attendanceData);
+    }, [currentDate]);
+
     return (
         <ScrollView style={{ flex: 1, backgroundColor: "white" }}>
+            {/* Month Navigation */}
             <View
                 style={{
                     flexDirection: "row",
@@ -72,10 +74,18 @@ const summary = () => {
                 />
             </View>
 
+            {/* Attendance Report */}
             <View style={{ marginHorizontal: 12 }}>
                 {attendanceData?.map((item, index) => (
                     <View key={index} style={{ marginVertical: 10 }}>
-                        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                        {/* Employee Info */}
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                gap: 10,
+                            }}
+                        >
                             <View
                                 style={{
                                     width: 50,
@@ -92,7 +102,9 @@ const summary = () => {
                                 </Text>
                             </View>
                             <View style={{ flex: 1 }}>
-                                <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                                <Text
+                                    style={{ fontSize: 16, fontWeight: "bold" }}
+                                >
                                     {item?.name}
                                 </Text>
                                 <Text style={{ marginTop: 5, color: "gray" }}>
@@ -101,7 +113,16 @@ const summary = () => {
                             </View>
                         </View>
 
-                        <View style={{ marginTop: 15, margin: 5, padding: 5, backgroundColor: "#A1FFCE", borderRadius: 5 }}>
+                        {/* Attendance Summary */}
+                        <View
+                            style={{
+                                marginTop: 15,
+                                margin: 5,
+                                padding: 5,
+                                backgroundColor: "#A1FFCE",
+                                borderRadius: 5,
+                            }}
+                        >
                             <DataTable>
                                 <DataTable.Header>
                                     <DataTable.Title>P</DataTable.Title>
@@ -114,8 +135,8 @@ const summary = () => {
                                     <DataTable.Cell>{item?.present}</DataTable.Cell>
                                     <DataTable.Cell>{item?.absent}</DataTable.Cell>
                                     <DataTable.Cell>{item?.halfday}</DataTable.Cell>
-                                    <DataTable.Cell>1</DataTable.Cell>
-                                    <DataTable.Cell>8</DataTable.Cell>
+                                    <DataTable.Cell>{item?.holiday}</DataTable.Cell>
+                                    <DataTable.Cell>{item?.nonWorkingDays}</DataTable.Cell>
                                 </DataTable.Row>
                             </DataTable>
                         </View>
@@ -126,6 +147,6 @@ const summary = () => {
     );
 };
 
-export default summary;
+export default Summary;
 
 const styles = StyleSheet.create({});

@@ -68,20 +68,20 @@ const MarkAttendance = () => {
         return <Text>Loading...</Text>
     }
 
-    const employeeWithAttendance = attendanceList.map((employee) => {
 
+    const employeeWithAttendance = employee.map((item) => {
+        // Find the corresponding attendance record for the employee
         const attendanceRecord = attendanceList.find((attendance) => {
-            return attendance.employeeId === employee._id
-        })
-        console.log(attendanceRecord);
+            return attendance.employeeId === item.employeeId;
+        });
 
+        // Return the employee data along with the attendance status
         return {
-            ...employee,
-            status: attendanceRecord?.status
-        }
-    })
+            ...item, // Spread the employee object
+            status: attendanceRecord?.status || 'Absent' // Default to 'Absent' if no record is found
+        };
+    });
 
-    console.log(employeeWithAttendance);
 
 
     return (
@@ -116,11 +116,8 @@ const MarkAttendance = () => {
                         elevation: 5,
                     }}>
                     {
-                        employee.length > 0 ? employee.map((item) => {
-
+                        employeeWithAttendance.length > 0 ? employeeWithAttendance.map((item) => {
                             return (
-
-
                                 <Pressable onPress={() => {
                                     router.push({
                                         pathname: "/[user]",
@@ -133,9 +130,7 @@ const MarkAttendance = () => {
                                             designation: item?.designation
                                         }
                                     })
-                                }
-
-                                }>
+                                }}>
                                     <View
                                         style={{
                                             backgroundColor: 'white', // Card background
@@ -150,35 +145,31 @@ const MarkAttendance = () => {
                                             elevation: 5,
                                         }}>
                                         <View style={{ marginBottom: 12 }}>
-                                            <View>
-
-                                                <Text
-                                                    style={{
-                                                        fontSize: 20, // Slightly larger for prominence
-                                                        fontWeight: '600', // Semi-bold for emphasis
-                                                        color: '#2D3748', // Darker color for primary text
-                                                    }}>
-                                                    {item.employeeName}
-                                                </Text>
-                                                {
-                                                    item?.status && (
-                                                        <View>
-                                                            <Text>
-                                                                {item?.status === "present" ? <Text style={{ color: 'green' }}>Present</Text> : <Text style={{ color: 'red' }}>Absent</Text>}
-                                                            </Text>
-                                                        </View>
-                                                    )
-                                                }
-                                            </View>
                                             <Text
                                                 style={{
-                                                    fontSize: 16,
-                                                    color: '#718096', // Soft color for secondary text
-                                                    marginTop: 4 // Spacing between name and email
+                                                    fontSize: 20, // Slightly larger for prominence
+                                                    fontWeight: '600', // Semi-bold for emphasis
+                                                    color: '#2D3748', // Darker color for primary text
                                                 }}>
-                                                {item.email}
+                                                {item.employeeName}
+                                            </Text>
+                                            <Text>
+                                                {item.status === "present" ? (
+                                                    <Text style={{ color: 'green' }}>Present</Text>
+                                                ) : (
+                                                    <Text style={{ color: 'red' }}>Absent</Text>
+                                                )}
                                             </Text>
                                         </View>
+
+                                        <Text
+                                            style={{
+                                                fontSize: 16,
+                                                color: '#718096', // Soft color for secondary text
+                                                marginTop: 4 // Spacing between name and email
+                                            }}>
+                                            {item.email}
+                                        </Text>
 
                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <Text
@@ -188,7 +179,6 @@ const MarkAttendance = () => {
                                                 }}>
                                                 {item.designation}
                                             </Text>
-
 
                                             <View
                                                 style={{
@@ -209,11 +199,11 @@ const MarkAttendance = () => {
                                         </View>
                                     </View>
                                 </Pressable>
-
-                            )
+                            );
                         }) : <Text>No Employee</Text>
                     }
                 </View>
+
             </Pressable>
         </View>
     )
