@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 const moment = require('moment');
 
-const Employee = require('./models/Employee');
+const Employee = require('./models/employee');
 const Attendance = require('./models/Attendance');
 
 const app = express();
