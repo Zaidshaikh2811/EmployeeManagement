@@ -6,7 +6,7 @@ require('dotenv').config();
 const moment = require('moment');
 
 const Employee = require('./models/employee');
-const Attendance = require('./models/attendance');
+const Attendance = require('./models/attendence');
 
 const app = express();
 const PORT = process.env.PORT || 3000;

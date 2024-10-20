@@ -33,6 +33,8 @@ const summary = () => {
                     },
                 }
             );
+            console.log(respone.data.report);
+
 
             setAttendanceData(respone.data.report);
         } catch (error) {
